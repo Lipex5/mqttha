@@ -164,7 +164,7 @@ void process_data(char* topic, char* data)
         {
             blink_led();
             s_led_state = !s_led_state;
-            printf("Led state changed from %d to %d\n", s_led_state, !s_led_state);
+            printf("Led state changed from %d to %d\n", !s_led_state, s_led_state);
         }
     }
 }
@@ -180,6 +180,29 @@ static void blink_led(void)
 {
     /* Set the GPIO level according to the state (LOW or HIGH)*/
     gpio_set_level(BLINK_GPIO, s_led_state);
+}
+
+void vTaskTest(void *pvParameters)
+{
+    for (;;)
+    {
+        mqtt_app_start();
+    }
+}
+
+void vTaskStarter(void)
+{
+    static uint8_t ucParameterToPass;
+    TaskHandle_t xHandle = NULL;
+
+    xTaskCreate( vTaskCode, "NAME", STACK_SIZE, &ucParameterToPass, tskIDLE_PRIORITY, &xHandle );
+    configASSERT( xHandle );
+
+    // Use the handle to delete the task.
+    if( xHandle != NULL )
+    {
+        vTaskDelete( xHandle );
+    }
 }
 
 void app_main(void)
