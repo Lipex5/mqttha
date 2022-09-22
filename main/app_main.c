@@ -26,11 +26,18 @@
 
 #define STRING_BUFFER_SIZE 50
 
-#define MQTT_BROKER_URI "mqtt://192.168.0.7:1883"
+#define MQTT_BROKER_URI "mqtt://192.168.194.216:1885"
 
-// Wifi Credentials
+// Wifi Credential
+// Home
+/*
 #define SSID "NOWO-BF01"
 #define PASS "BBA8637A187C5E7E"
+*/
+
+// Hotspot
+#define SSID "POCO-X3-Pro"
+#define PASS "teresa123"
 
 // GPIO Pins
 #define BLINK_GPIO 2
