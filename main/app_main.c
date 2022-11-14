@@ -208,7 +208,7 @@ void vTaskTest(void *pvParameters)
     // Check stack
     UBaseType_t uxHighWaterMark;
 
-    printf("Task started");
+    printf("vTaskTest started\n");
     mqtt_app_start();
 
     uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
@@ -220,7 +220,28 @@ void vTaskTest(void *pvParameters)
         uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
         printf("Stack left on vTaskTest: %d\n", uxHighWaterMark);
     }
+}
 
+void vTaskTest2(void *pvParameters)
+{
+    /* The parameter value is expected to be 1 as 1 is passed in the
+    pvParameters value in the call to xTaskCreate() below. */
+    configASSERT( ( ( uint32_t ) pvParameters ) == 1 );
+
+    // Check stack
+    UBaseType_t uxHighWaterMark;
+
+    printf("vTaskTest2 started\n");
+
+    uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
+
+    // Infinite loop
+    for (;;)
+    {
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+        uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
+        printf("Stack left on vTaskTest2: %d\n", uxHighWaterMark);
+    }
 }
 
 
@@ -228,14 +249,24 @@ void vTaskStarter(void)
 {
     BaseType_t xReturned;
     TaskHandle_t xHandleTaskTest = NULL;
+    TaskHandle_t xHandleTaskTest2 = NULL;
 
     xReturned = xTaskCreate( vTaskTest, "Task Test ", TASK_STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, &xHandleTaskTest );
     configASSERT(xHandleTaskTest);
 
     if( xReturned != pdPASS )
     {
-        printf("Error creating test task!\n");
+        printf("Error creating vTaskTest!\n");
         vTaskDelete( xHandleTaskTest );
+    }
+
+    xReturned = xTaskCreate( vTaskTest2, "Task Test 2", TASK_STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, &xHandleTaskTest2 );
+    configASSERT(xHandleTaskTest2);
+
+    if( xReturned != pdPASS )
+    {
+        printf("Error creating vTaskTest2!\n");
+        vTaskDelete( xHandleTaskTest2 );
     }
 }
 
