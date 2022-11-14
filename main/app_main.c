@@ -26,13 +26,13 @@
 
 // Include for testing the stacks of the tasks
 #define INCLUDE_uxTaskGetStackHighWaterMark
-#define STACK_SIZE 2500
+#define TASK_STACK_SIZE 2500
 
 #define STRING_BUFFER_SIZE 50
 
-#define MQTT_BROKER_URI "mqtt://192.168.0.3:1885"
+#define MQTT_BROKER_URI "mqtt://192.168.225.216:1885"
 
-// Wifi Credential
+// Wifi Credentials
 // Home
 /*
 #define SSID "NOWO-BF01"
@@ -213,14 +213,14 @@ void vTaskTest(void *pvParameters)
 
     uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
 
+    // Infinite loop
     for (;;)
     {
         vTaskDelay(10000 / portTICK_PERIOD_MS);
         uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
-        printf("Stack left on Task Test: %d\n", uxHighWaterMark);
+        printf("Stack left on vTaskTest: %d\n", uxHighWaterMark);
     }
 
-    // Insert infinite loop here (if needed)
 }
 
 
@@ -229,7 +229,7 @@ void vTaskStarter(void)
     BaseType_t xReturned;
     TaskHandle_t xHandleTaskTest = NULL;
 
-    xReturned = xTaskCreate( vTaskTest, "Task Test ", STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, &xHandleTaskTest );
+    xReturned = xTaskCreate( vTaskTest, "Task Test ", TASK_STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, &xHandleTaskTest );
     configASSERT(xHandleTaskTest);
 
     if( xReturned != pdPASS )
@@ -248,7 +248,7 @@ void app_main(void)
     vTaskDelay(2000 / portTICK_PERIOD_MS);
     printf("WIFI was initiated ...........\n");
 
-    //vTaskStarter();
-    mqtt_app_start();
+    vTaskStarter();
+    //mqtt_app_start();
 
 }
